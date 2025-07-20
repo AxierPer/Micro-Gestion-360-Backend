@@ -16,7 +16,13 @@ router.post('/', async (req, res)=>{
     const validate = await matchPassword(user.password, userExist.password)
     
     if(validate){
-        const token = jwt.sign(user, config.jwt.jwtKey, {expiresIn: "1h"})
+        //Save the id and role from the user
+        const payload = {
+            email: userExist.email,
+            role: userExist.role
+        };
+
+        const token = jwt.sign(payload, config.jwt.jwtKey, {expiresIn: "1h"})
         res.json({token})
     }else{
         res.status(401).json({ message: 'Contraseña incorrecta' });
