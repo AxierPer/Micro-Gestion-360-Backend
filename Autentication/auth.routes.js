@@ -6,7 +6,11 @@ import jwtMiddleware from "../utils/jwt.middleware.js";
 
 const router = express.Router()
 
-router.get("/", jwtMiddleware,async (req, res)=>{
+//Apply the JWT middleware to all the routes
+router.use(jwtMiddleware);
+
+router.get("/", async (req, res)=>{
+    console.log(req.user.role)
     if (req.user.role !== 'admin' && req.user.role !== 'tester') {
         return res.status(403).json({ message: 'Acceso denegado: se requiere rol admin' });
     }
@@ -14,7 +18,7 @@ router.get("/", jwtMiddleware,async (req, res)=>{
     res.send(data)
 })
 
-router.post("/add", jwtMiddleware, async (req, res)=>{
+router.post("/add", async (req, res)=>{
     if (req.user.role !== 'admin' && req.user.role !== 'tester') {
         return res.status(403).json({ message: 'Acceso denegado: se requiere rol admin' });
     }
